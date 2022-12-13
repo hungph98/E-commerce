@@ -2,6 +2,7 @@ const express = require("express");
 const app = express();
 const mongoose = require("mongoose");
 const dotenv = require("dotenv");
+const cookieParser = require('cookie-parser')
 const authRouter = require("./src/routes/auth");
 const userRouter = require("./src/routes/user");
 const productRouter = require("./src/routes/product");
@@ -10,6 +11,7 @@ const orderRouter = require("./src/routes/order");
 
 
 app.use(express.json());
+app.use(cookieParser());
 
 dotenv.config();
 mongoose.set('strictQuery', true);
