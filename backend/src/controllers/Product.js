@@ -49,7 +49,7 @@ class productController {
         }
     }
 
-    // Get all product
+    // Get all product to category
     getAllProduct = async (req, res, next) => {
         const qNew = req.query.new;
         const qCategory = req.query.category;
