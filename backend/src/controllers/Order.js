@@ -1,7 +1,6 @@
 const Order = require("../models/Order");
-const {get} = require("mongoose");
 
-class orderController{
+class OrderController{
 
     // Create Order
     createOrder = async (req, res, next) => {
@@ -84,4 +83,4 @@ class orderController{
     }
 }
 
-module.exports = new orderController;
+module.exports = new OrderController;
