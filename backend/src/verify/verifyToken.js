@@ -2,18 +2,37 @@ const jwt = require("jsonwebtoken");
 const createError = require("../verify/err");
 
 const verifyToken = (req, res, next) => {
-    const token = req.cookies.access_token;
-    if (!token) {
-        return next(createError(401, "You are not Authenticated"));
+    const authHeader = req.headers.token;
+    if (authHeader) {
+        const token = authHeader
+        jwt.verify(token, process.env.SECRET_PASS, (err, user) => {
+            if (err) res.status(403).json("Token is not valid!");
+            req.user = user;
+            next();
+        });
+    } else {
+        return res.status(401).json("You are not authenticated!");
     }
+};
 
-    jwt.verify(token, process.env.SECRET_PASS, (err, user) => {
-        if (err) {
-            return next(createError(403, "Token is not valid"));
+const verifyTokenAndAuthorization = (req, res, next) => {
+    verifyToken(req, res, () => {
+        if (req.user.id === req.params.id || req.user.isAdmin) {
+            next();
+        } else {
+            res.status(403).json("You are not alowed to do that!");
         }
-        req.user = user;
-        next();
+    });
+};
+
+const verifyTokenAdmin = (req, res, next) => {
+    verifyToken(req, res, () => {
+        if (req.user.isAdmin) {
+            next()
+        } else {
+            res.status(403).json("You are not alowed to do that!")
+        }
     })
 }
 
-module.exports = verifyToken;
+module.exports = {verifyToken, verifyTokenAndAuthorization, verifyTokenAdmin};
